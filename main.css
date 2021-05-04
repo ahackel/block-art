@@ -1,0 +1,30 @@
+body{
+    background-color: cadetblue;
+    font-size: 64px;
+}
+
+.block-art{
+    margin: auto;
+    background-color: white;
+}
+
+.block-art div{
+    display: block;
+    float: left;
+    box-sizing: border-box;
+    /*border: 1px solid lightblue;*/
+    width: 1em;
+    height: 1em;
+}
+
+.rotation1 {
+    transform: rotate(90deg);
+}
+
+.rotation2 {
+    transform: rotate(180deg);
+}
+
+.rotation3 {
+    transform: rotate(270deg);
+}
