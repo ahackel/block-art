@@ -11,9 +11,12 @@ var colors = [
 
 var symbols = [
     '<svg viewBox="0 0 512 512"><polygon fill="currentColor" points="0,0 512,0 512,512 0,512" /></svg>',
-    '<svg viewBox="0 0 512 512"><polygon fill="currentColor" points="0,0 0,512 512,0" /></svg>',
-    '<svg viewBox="0 0 512 512"><circle fill="currentColor" cx="0" cy="0" r="512" /></svg>',
     '<svg viewBox="0 0 512 512"><polygon fill="currentColor" points="0,0 512,0 512,256 0,256" /></svg>',
+    '<svg viewBox="0 0 512 512"><polygon fill="currentColor" points="0,0 256,0 256,256 0,256" /></svg>',
+    '<svg viewBox="0 0 512 512"><polygon fill="currentColor" points="0,0 0,512 512,0" /></svg>',
+    '<svg viewBox="0 0 512 512"><circle fill="currentColor" cx="256" cy="256" r="256" /><polygon fill="currentColor" points="0,0 256,0 256,512 0,512" /></svg>',
+    '<svg viewBox="0 0 512 512"><circle fill="currentColor" cx="256" cy="256" r="256" /></svg>',
+    '<svg viewBox="0 0 512 512"><circle fill="currentColor" cx="0" cy="0" r="512" /></svg>',
 ]
 
 class Block{
@@ -96,6 +99,14 @@ class BlockArt{
                 var block = new Block(blockElement);
                 this.blocks.push(block);
                 this.updateBlock(x, y);
+            }
+        }
+    }
+
+    clear(color) {
+        for (var y = 0; y < this.height; y++) {
+            for (var x = 0; x < this.width; x++) {
+                this.setPixel(x, y, {color: color})
             }
         }
     }
@@ -217,6 +228,11 @@ class App{
         this.rotaterightButton.addEventListener("click", evt => {
             this.rotation = (this.rotation + 1) % 4;
             this.previewBlock.setRotation(this.rotation);
+        });
+
+        this.clearButton = document.getElementById("clear");
+        this.clearButton.addEventListener("click", evt => {
+            this.blockArt.clear(this.colorPalette.index);
         });
 
         this.blockArt = new BlockArt(document.getElementById("block-art"), 8, 8, this.readData());

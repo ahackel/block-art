@@ -27,6 +27,7 @@ body{
     height: 0.5em;
     position: absolute;
     color: white;
+    background-repeat: no-repeat;
 }
 
 #rotate-left{
@@ -34,7 +35,7 @@ body{
     top: 0.25em;
     left: -2em;
     right: 0;
-    background: url("svg/undo-solid.svg");
+    background-image: url("svg/undo-solid.svg");
 }
 
 #rotate-right{
@@ -42,26 +43,34 @@ body{
     top: 0.25em;
     left: 2em;
     right: 0;
-    background: url("svg/redo-solid.svg");
+    background-image: url("svg/redo-solid.svg");
+}
+
+#clear{
+    margin: auto;
+    bottom: 0.25em;
+    left: 0;
+    right: 0;
+    background-image: url("svg/trash-alt-solid.svg");
 }
 
 #color-palette{
     position: absolute;
-    font-size: 0.5em;
+    font-size: 0.7em;
     width: 4em;
 }
 
 #background-palette{
     position: absolute;
     bottom: 0;
-    font-size: 0.5em;
+    font-size: 0.7em;
     width: 4em;
 }
 
 #symbol-palette{
     position: absolute;
     right: 0;
-    font-size: 0.5em;
+    font-size: 0.7em;
     width: 4em;
 }
 
@@ -98,8 +107,8 @@ body{
 
 @media (orientation: landscape) {
     .block-art .block {
-        outline: 2px solid rgba(255, 255, 255, 0.25);
-        outline-offset: -1px;
+        outline: 1px dashed rgba(255, 255, 255, 0.15);
+        /*outline-offset: -1px;*/
     }
     #editor{
         display: block;
