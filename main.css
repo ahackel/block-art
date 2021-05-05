@@ -97,19 +97,11 @@ body{
 }
 
 @media (orientation: landscape) {
-    .block {
-        outline: 2px dashed rgba(255, 255, 255, 0.25);
+    .block-art .block {
+        outline: 2px solid rgba(255, 255, 255, 0.25);
+        outline-offset: -1px;
     }
     #editor{
         display: block;
-    }
-}
-
-@media (orientation: portrait) {
-    .block {
-        outline: none;
-    }
-    #editor{
-        display: none;
     }
 }

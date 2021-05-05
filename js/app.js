@@ -40,14 +40,14 @@ class Block{
 }
 
 class BlockArt{
-    constructor(element, width, height) {
+    constructor(element, width, height, data) {
         this.element = element;
         this.width = width;
         this.height = height;
         this.element.classList.add("block-art");
         this.element.style.width = this.width + "em";
         this.element.style.height = this.height + "em";
-        this.data = new Int8Array(this.width * this.height * 4);
+        this.data = data || new Int8Array(this.width * this.height * 4);
         this.createBlocks();
     }
     
@@ -157,19 +157,55 @@ class SymbolPalette extends Palette{
 }
 
 
-var app = {
-    run: function(){
+class App{
+    storeData(){
+        var data = this.blockArt.data;
+        localStorage.setItem("data", JSON.stringify(Array.from(data)));
+    }
+
+    readData(){
+        var json = localStorage.getItem("data");
+        if (json){
+            return new Int8Array(JSON.parse(json));
+        }
+        return null;
+    }
+
+    changeBlockColor(evt) {
+        var isTouchEvent = evt.type.includes("touch");
+        var buttonDown = isTouchEvent ? evt.touches.length === 1 : evt.buttons === 1;
+
+        if (!buttonDown){
+            return;
+        }
+
+        var rect = this.blockArt.element.getBoundingClientRect();
+        var clientX = isTouchEvent ? evt.touches[0].clientX : evt.clientX;
+        var clientY = isTouchEvent ? evt.touches[0].clientY : evt.clientY;
+        var x = Math.floor(this.blockArt.width * (clientX - rect.x) / rect.width);
+        var y = Math.floor(this.blockArt.height * (clientY - rect.y) / rect.height);
+
+        this.blockArt.setPixel(x, y, {
+            symbol: this.symbolPalette.index,
+            color: this.colorPalette.index,
+            background: this.backgroundPalette.index,
+            rotation: this.rotation
+        });
+        evt.preventDefault();
+    }
+    
+    run() {
         this.rotation = 0;
         this.previewBlock = new Block(document.getElementById("preview-block"));
-        this.colorPalette = new ColorPalette(document.getElementById("color-palette"), color =>{
+        this.colorPalette = new ColorPalette(document.getElementById("color-palette"), color => {
             this.previewBlock.setColor(color);
         });
-        
-        this.backgroundPalette = new ColorPalette(document.getElementById("background-palette"), color =>{
+
+        this.backgroundPalette = new ColorPalette(document.getElementById("background-palette"), color => {
             this.previewBlock.setBackground(color);
         });
-        
-        this.symbolPalette = new SymbolPalette(document.getElementById("symbol-palette"), index =>{
+
+        this.symbolPalette = new SymbolPalette(document.getElementById("symbol-palette"), index => {
             this.previewBlock.setSymbol(index);
         });
         this.rotateLeftButton = document.getElementById("rotate-left");
@@ -182,41 +218,21 @@ var app = {
             this.rotation = (this.rotation + 1) % 4;
             this.previewBlock.setRotation(this.rotation);
         });
+
+        this.blockArt = new BlockArt(document.getElementById("block-art"), 8, 8, this.readData());
+
+        this.blockArt.element.addEventListener("mousedown", evt => this.changeBlockColor(evt));
+        this.blockArt.element.addEventListener("mousemove", evt => this.changeBlockColor(evt));
+        this.blockArt.element.addEventListener("touchstart", evt => this.changeBlockColor(evt));
+        this.blockArt.element.addEventListener("touchmove", evt => this.changeBlockColor(evt));
+
+        this.blockArt.element.addEventListener("mouseup", evt => this.storeData());
+        this.blockArt.element.addEventListener("touchend", evt => this.storeData());
         
-        var blockArt = new BlockArt(document.getElementById("block-art"), 8, 8);
-        
-        blockArt.element.addEventListener("mousedown", evt => changeBlockColor(evt));
-        blockArt.element.addEventListener("mousemove", evt => changeBlockColor(evt));
-        blockArt.element.addEventListener("touchstart", evt => changeBlockColor(evt));
-        blockArt.element.addEventListener("touchmove", evt => changeBlockColor(evt));
-
-        function changeBlockColor(evt) {
-            console.log(evt.type)
-            var isTouchEvent = evt.type.includes("touch");
-            var buttonDown = isTouchEvent ? evt.touches.length === 1 : evt.buttons === 1;
-
-            if (!buttonDown){
-                return;
-            }
-
-            var rect = blockArt.element.getBoundingClientRect();
-            var clientX = isTouchEvent ? evt.touches[0].clientX : evt.clientX;
-            var clientY = isTouchEvent ? evt.touches[0].clientY : evt.clientY;
-            var x = Math.floor(blockArt.width * (clientX - rect.x) / rect.width);
-            var y = Math.floor(blockArt.height * (clientY - rect.y) / rect.height);
-
-            blockArt.setPixel(x, y, {
-                symbol: this.symbolPalette.index,
-                color: this.colorPalette.index,
-                background: this.backgroundPalette.index,
-                rotation: this.rotation
-            });
-            evt.preventDefault();
-        }
-
-        document.body.appendChild(blockArt.element);
+        document.body.appendChild(this.blockArt.element);
     }
 }
 
 // document.addEventListener("touchstart", evt => evt.preventDefault())
-document.body.onload = app.run;
+var app = new App();
+document.body.onload = () => app.run();
