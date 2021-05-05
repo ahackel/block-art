@@ -1,30 +1,115 @@
+* {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: none;
+}
+
+svg{
+    pointer-events: none;
+}
+
 body{
-    background-color: cadetblue;
+    background-color: black;
     font-size: 64px;
+    margin: 0;
+    overscroll-behavior: none;
 }
 
-.block-art{
+#editor{
+    display: none;
+    width: 100%;
+    height: 100%;
+}
+
+.button{
+    width: 0.5em;
+    height: 0.5em;
+    position: absolute;
+    color: white;
+}
+
+#rotate-left{
     margin: auto;
-    background-color: white;
+    top: 0.25em;
+    left: -2em;
+    right: 0;
+    background: url("svg/undo-solid.svg");
 }
 
-.block-art div{
-    display: block;
+#rotate-right{
+    margin: auto;
+    top: 0.25em;
+    left: 2em;
+    right: 0;
+    background: url("svg/redo-solid.svg");
+}
+
+#color-palette{
+    position: absolute;
+    font-size: 0.5em;
+    width: 4em;
+}
+
+#background-palette{
+    position: absolute;
+    bottom: 0;
+    font-size: 0.5em;
+    width: 4em;
+}
+
+#symbol-palette{
+    position: absolute;
+    right: 0;
+    font-size: 0.5em;
+    width: 4em;
+}
+
+.palette div{
     float: left;
-    box-sizing: border-box;
-    /*border: 1px solid lightblue;*/
     width: 1em;
     height: 1em;
 }
 
-.rotation1 {
-    transform: rotate(90deg);
+.palette div.selected{
+    outline: 2px solid white;
+    outline-offset: -2px;
 }
 
-.rotation2 {
-    transform: rotate(180deg);
+.block-art{
+    position: absolute;
+    top: 0; bottom: 0; left: 0; right: 0;
+    margin: auto;
 }
 
-.rotation3 {
-    transform: rotate(270deg);
+.block{
+    float: left;
+    box-sizing: border-box;
+    width: 1em;
+    height: 1em;
+}
+
+#preview-block{
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+@media (orientation: landscape) {
+    .block {
+        outline: 2px dashed rgba(255, 255, 255, 0.25);
+    }
+    #editor{
+        display: block;
+    }
+}
+
+@media (orientation: portrait) {
+    .block {
+        outline: none;
+    }
+    #editor{
+        display: none;
+    }
 }

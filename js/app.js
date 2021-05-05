@@ -10,16 +10,43 @@ var colors = [
 ];
 
 var symbols = [
-    '<svg viewBox="0 0 512 512"></svg>',
+    '<svg viewBox="0 0 512 512"><polygon fill="currentColor" points="0,0 512,0 512,512 0,512" /></svg>',
     '<svg viewBox="0 0 512 512"><polygon fill="currentColor" points="0,0 0,512 512,0" /></svg>',
     '<svg viewBox="0 0 512 512"><circle fill="currentColor" cx="0" cy="0" r="512" /></svg>',
     '<svg viewBox="0 0 512 512"><polygon fill="currentColor" points="0,0 512,0 512,256 0,256" /></svg>',
 ]
 
+class Block{
+    constructor(element){
+        this.element = element;
+        this.element.classList.add("block");
+    }
+
+    setSymbol(symbol) {
+        this.element.innerHTML = symbols[symbol];
+    }
+    
+    setColor(color) {
+        this.element.style.color = colors[color];
+    }
+    
+    setBackground(background) {
+        this.element.style.backgroundColor = colors[background];
+    }
+    
+    setRotation(rotation){
+        this.element.style.transform = "rotate(" + rotation * 90 + "deg)";
+    }
+}
+
 class BlockArt{
-    constructor(width, height) {
+    constructor(element, width, height) {
+        this.element = element;
         this.width = width;
         this.height = height;
+        this.element.classList.add("block-art");
+        this.element.style.width = this.width + "em";
+        this.element.style.height = this.height + "em";
         this.data = new Int8Array(this.width * this.height * 4);
         this.createBlocks();
     }
@@ -54,62 +81,136 @@ class BlockArt{
     updateBlock(x, y) {
         var pixel = this.getPixel(x, y);
         var block = this.getBlock(x, y);
-        block.className = '';
-        // block.classList.add("symbol" + pixel.symbol);
-        block.innerHTML = symbols[pixel.symbol];
-        block.style.color = colors[pixel.color];
-        block.style.backgroundColor = colors[pixel.background];
-        block.classList.add("rotation" + pixel.rotation);
+        block.setSymbol(pixel.symbol);
+        block.setColor(pixel.color);
+        block.setBackground(pixel.background);
+        block.setRotation(pixel.rotation);
     }
 
     createBlocks(){
         this.blocks = [];
-        this.element = document.createElement("div");
-        this.element.style.width = this.width + "em";
-        this.element.style.height = this.height + "em";
-        this.element.classList.add("block-art");
         for (var y = 0; y < this.height; y++) {
             for (var x = 0; x < this.width; x++) {
-                var block = document.createElement("div");
-                this.element.appendChild(block);
+                var blockElement = document.createElement("div");
+                this.element.appendChild(blockElement);
+                var block = new Block(blockElement);
                 this.blocks.push(block);
                 this.updateBlock(x, y);
-                this.setPixel(x, y, {symbol: 2, color: 5})
             }
         }
+    }
+}
+
+class Palette{
+    constructor(element, options, onChangeCallback){
+        this.element = element;
+        this.options = options;
+        this.element.classList.add("palette");
+        this.createOptions();
+        this.setIndex(0);
+        this.onChangeCallback = onChangeCallback;
+    }
+
+    createOptions() {
+        for (let i = 0; i < this.options.length; i++){
+            var optionElement = document.createElement("div");
+            this.setupOption(optionElement, i);
+            optionElement.addEventListener("click", evt => this.setIndex(i))
+            this.element.appendChild(optionElement);
+        }
+    }
+    
+    setupOption(optionElement, index){
+    }
+
+    setIndex(index) {
+        for (let i = 0; i < this.element.childElementCount; i++) {
+            this.element.children.item(i).classList.toggle("selected", index === i);            
+        }
+        
+        this.index = index;
+        this.onChangeCallback?.(index);
+    }
+}
+
+class ColorPalette extends Palette{
+    constructor(element, onChangeCallback) {
+        super(element, colors, onChangeCallback);
+        this.setIndex(6);
+    }
+    
+    setupOption(optionElement, index){
+        optionElement.style.backgroundColor = colors[index];
+    }
+}
+
+class SymbolPalette extends Palette{
+    constructor(element, onChangeCallback) {
+        super(element, symbols, onChangeCallback);
+    }
+    
+    setupOption(optionElement, index){
+        var block = new Block(optionElement);
+        block.setSymbol(index);
+        block.setColor(20);
     }
 }
 
 
 var app = {
     run: function(){
-        var blockArt = new BlockArt(8, 8);
+        this.rotation = 0;
+        this.previewBlock = new Block(document.getElementById("preview-block"));
+        this.colorPalette = new ColorPalette(document.getElementById("color-palette"), color =>{
+            this.previewBlock.setColor(color);
+        });
         
-        blockArt.element.addEventListener("mousedown", evt => changeBlockColor(evt))
-        blockArt.element.addEventListener("mousemove", evt => changeBlockColor(evt))
+        this.backgroundPalette = new ColorPalette(document.getElementById("background-palette"), color =>{
+            this.previewBlock.setBackground(color);
+        });
+        
+        this.symbolPalette = new SymbolPalette(document.getElementById("symbol-palette"), index =>{
+            this.previewBlock.setSymbol(index);
+        });
+        this.rotateLeftButton = document.getElementById("rotate-left");
+        this.rotateLeftButton.addEventListener("click", evt => {
+            this.rotation = (this.rotation + 3) % 4;
+            this.previewBlock.setRotation(this.rotation);
+        });
+        this.rotaterightButton = document.getElementById("rotate-right");
+        this.rotaterightButton.addEventListener("click", evt => {
+            this.rotation = (this.rotation + 1) % 4;
+            this.previewBlock.setRotation(this.rotation);
+        });
+        
+        var blockArt = new BlockArt(document.getElementById("block-art"), 8, 8);
+        
+        blockArt.element.addEventListener("mousedown", evt => changeBlockColor(evt));
+        blockArt.element.addEventListener("mousemove", evt => changeBlockColor(evt));
+        blockArt.element.addEventListener("touchstart", evt => changeBlockColor(evt));
+        blockArt.element.addEventListener("touchmove", evt => changeBlockColor(evt));
 
         function changeBlockColor(evt) {
-            if (evt.buttons !== 1){
+            console.log(evt.type)
+            var isTouchEvent = evt.type.includes("touch");
+            var buttonDown = isTouchEvent ? evt.touches.length === 1 : evt.buttons === 1;
+
+            if (!buttonDown){
                 return;
             }
+
             var rect = blockArt.element.getBoundingClientRect();
-            var x = Math.floor(blockArt.width * (evt.clientX - rect.x) / rect.width);
-            var y = Math.floor(blockArt.height * (evt.clientY - rect.y) / rect.height);
-            var pixel = blockArt.getPixel(x, y);
-            
-            if (evt.shiftKey){
-                pixel.rotation = (pixel.rotation + 1) % 4;
-            }
-            else if (evt.altKey){
-                pixel.color = (pixel.color + 1) % colors.length;
-            }
-            else if (evt.metaKey){
-                pixel.background = (pixel.background + 1) % colors.length;
-            }
-            else{
-                pixel.symbol = (pixel.symbol + 1) % symbols.length;
-            }
-            blockArt.setPixel(x, y, pixel);
+            var clientX = isTouchEvent ? evt.touches[0].clientX : evt.clientX;
+            var clientY = isTouchEvent ? evt.touches[0].clientY : evt.clientY;
+            var x = Math.floor(blockArt.width * (clientX - rect.x) / rect.width);
+            var y = Math.floor(blockArt.height * (clientY - rect.y) / rect.height);
+
+            blockArt.setPixel(x, y, {
+                symbol: this.symbolPalette.index,
+                color: this.colorPalette.index,
+                background: this.backgroundPalette.index,
+                rotation: this.rotation
+            });
             evt.preventDefault();
         }
 
@@ -117,4 +218,5 @@ var app = {
     }
 }
 
+// document.addEventListener("touchstart", evt => evt.preventDefault())
 document.body.onload = app.run;
