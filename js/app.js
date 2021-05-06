@@ -22,8 +22,8 @@ var symbols = [
     '<svg viewBox="0 0 512 512"><circle fill="currentColor" cx="256" cy="256" r="128" /></svg>',
     '<svg viewBox="0 0 512 512"><circle fill="none" stroke="currentColor" stroke-width="256" cx="0" cy="0" r="384" /></svg>',
     '<svg viewBox="0 0 512 512"><circle fill="currentColor" cx="0" cy="0" r="512" /></svg>',
-    '<svg viewBox="0 0 260 260"><path fill="currentColor" d="m55,237 74-228 74,228L9,96h240"/></svg>',
-    '<svg viewBox="0 0 20 20"><path fill="currentColor" d="M14.75 1A5.24 5.24 0 0 0 10 4 5.24 5.24 0 0 0 0 6.25C0 11.75 10 19 10 19s10-7.25 10-12.75A5.25 5.25 0 0 0 14.75 1z"/></svg>'
+    '<svg viewBox="-20 -20 300 300"><path fill="currentColor" d="m55,237 74-228 74,228L9,96h240"/></svg>',
+    '<svg viewBox="-4 -4 28 28"><path fill="currentColor" d="M14.75 1A5.24 5.24 0 0 0 10 4 5.24 5.24 0 0 0 0 6.25C0 11.75 10 19 10 19s10-7.25 10-12.75A5.25 5.25 0 0 0 14.75 1z"/></svg>'
 
 ]
 
@@ -91,7 +91,7 @@ class Block{
         var t = decodeTransform(transform);
         var scaleX = t.flipX ? -1 : 1;
         var scaleY = t.flipY ? -1 : 1;
-        this.element.style.transform = "rotate(" + t.rotation * 90 + "deg) scale(" + scaleX + "," + scaleY +")";
+        this.element.style.transform = "scale(" + scaleX + "," + scaleY +") rotate(" + t.rotation * 90 + "deg)";
     }
 }
 
