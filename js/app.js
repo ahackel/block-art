@@ -10,17 +10,53 @@ var colors = [
 ];
 
 var symbols = [
-    '<svg viewBox="0 0 512 512"><polygon fill="currentColor" points="0,0 512,0 512,512 0,512" /></svg>',
-    '<svg viewBox="0 0 512 512"><polygon fill="currentColor" points="0,0 512,0 512,256 0,256" /></svg>',
-    '<svg viewBox="0 0 512 512"><polygon fill="currentColor" points="0,0 256,0 256,256 0,256" /></svg>',
+    '<svg viewBox="0 0 512 512"><rect fill="currentColor" width="512" height="512" /></svg>',
+    '<svg viewBox="0 0 512 512"><rect fill="currentColor" width="512" height="256" /></svg>',
+    '<svg viewBox="0 0 512 512"><rect fill="currentColor" width="256" height="256" /></svg>',
+    '<svg viewBox="0 0 512 512"><rect fill="currentColor" width="256" height="256" /><<rect fill="currentColor" x="256" y="256" width="256" height="256" /></svg>',
     '<svg viewBox="0 0 512 512"><polygon fill="currentColor" points="0,0 0,512 512,0" /></svg>',
+    '<svg viewBox="0 0 512 512"><polygon fill="currentColor" points="0,0 0,512 256,0" /></svg>',
+    '<svg viewBox="0 0 512 512"><polygon fill="currentColor" points="0,0 256,512 512,0" /></svg>',
     '<svg viewBox="0 0 512 512"><circle fill="currentColor" cx="256" cy="256" r="256" /><polygon fill="currentColor" points="0,0 256,0 256,512 0,512" /></svg>',
     '<svg viewBox="0 0 512 512"><circle fill="currentColor" cx="256" cy="256" r="256" /></svg>',
+    '<svg viewBox="0 0 512 512"><circle fill="currentColor" cx="256" cy="256" r="128" /></svg>',
+    '<svg viewBox="0 0 512 512"><circle fill="none" stroke="currentColor" stroke-width="256" cx="0" cy="0" r="384" /></svg>',
     '<svg viewBox="0 0 512 512"><circle fill="currentColor" cx="0" cy="0" r="512" /></svg>',
+    '<svg viewBox="0 0 260 260"><path fill="currentColor" d="m55,237 74-228 74,228L9,96h240"/></svg>',
+    '<svg viewBox="0 0 20 20"><path fill="currentColor" d="M14.75 1A5.24 5.24 0 0 0 10 4 5.24 5.24 0 0 0 0 6.25C0 11.75 10 19 10 19s10-7.25 10-12.75A5.25 5.25 0 0 0 14.75 1z"/></svg>'
+
 ]
 
 function clamp(x){
     return Math.max(0, Math.min(1, x));
+}
+
+function flip(rotation){
+    switch (rotation){
+        case 0: return 1;
+        case 1: return 0;
+        case 2: return 3;
+        case 3: return 2;
+    }
+}
+
+function encodeTransform(rotation, flipX, flipY){
+    var transform = rotation;
+    if (flipX){
+        transform += 4;
+    }
+    if (flipY){
+        transform += 8;
+    }
+    return transform;
+}
+
+function decodeTransform(transform){
+    return {
+        rotation: transform & 3, // first 2 bits
+        flipX: transform & 4,
+        flipY: transform & 8
+    }
 }
 
 function fastClick(target, callback){
@@ -51,8 +87,11 @@ class Block{
         this.element.style.backgroundColor = colors[background];
     }
     
-    setRotation(rotation){
-        this.element.style.transform = "rotate(" + rotation * 90 + "deg)";
+    setTransform(transform){
+        var t = decodeTransform(transform);
+        var scaleX = t.flipX ? -1 : 1;
+        var scaleY = t.flipY ? -1 : 1;
+        this.element.style.transform = "rotate(" + t.rotation * 90 + "deg) scale(" + scaleX + "," + scaleY +")";
     }
 }
 
@@ -74,7 +113,7 @@ class BlockArt{
             symbol: this.data[index],
             color: this.data[index + 1],
             background: this.data[index + 2],
-            rotation: this.data[index + 3]
+            transform: this.data[index + 3]
         }
     }
 
@@ -83,7 +122,7 @@ class BlockArt{
         this.data[index] = pixel.symbol || 0;
         this.data[index + 1] = pixel.color || 0;
         this.data[index + 2] = pixel.background || 0;
-        this.data[index + 3] = pixel.rotation || 0;
+        this.data[index + 3] = pixel.transform || 0;
         this.updateBlock(x, y);
     }
 
@@ -101,7 +140,7 @@ class BlockArt{
         block.setSymbol(pixel.symbol);
         block.setColor(pixel.color);
         block.setBackground(pixel.background);
-        block.setRotation(pixel.rotation);
+        block.setTransform(pixel.transform);
     }
 
     createBlocks(){
@@ -216,13 +255,53 @@ class App{
             symbol: this.symbolPalette.index,
             color: this.colorPalette.index,
             background: this.backgroundPalette.index,
-            rotation: this.rotation
+            transform: encodeTransform(this.rotation, this.flipX, this.flipY)
         });
+        
+        if (this.symmetryX){
+            this.blockArt.setPixel(this.blockArt.width - x - 1, y, {
+                symbol: this.symbolPalette.index,
+                color: this.colorPalette.index,
+                background: this.backgroundPalette.index,
+                transform: encodeTransform(this.rotation, !this.flipX, this.flipY)
+            });
+        }
+        
+        if (this.symmetryY){
+            this.blockArt.setPixel(x, this.blockArt.height - y - 1, {
+                symbol: this.symbolPalette.index,
+                color: this.colorPalette.index,
+                background: this.backgroundPalette.index,
+                transform: encodeTransform(this.rotation, this.flipX, !this.flipY)
+            });
+        }
+        
+        if (this.symmetryX && this.symmetryY){
+            this.blockArt.setPixel(this.blockArt.width - x - 1, this.blockArt.height - y - 1, {
+                symbol: this.symbolPalette.index,
+                color: this.colorPalette.index,
+                background: this.backgroundPalette.index,
+                transform: encodeTransform(this.rotation, !this.flipX, !this.flipY)
+            });
+        }
+        
         evt.preventDefault();
+    }
+    
+    setSymmetryX(on){
+        this.symmetryX = on;
+        this.symmetryXButton.classList.toggle("disabled", !on);
+    }
+    
+    setSymmetryY(on){
+        this.symmetryY = on;
+        this.symmetryYButton.classList.toggle("disabled", !on);
     }
     
     run() {
         this.rotation = 0;
+        this.flipX = false;
+        this.flipY = false;
         this.previewBlock = new Block(document.getElementById("preview-block"));
         this.colorPalette = new ColorPalette(document.getElementById("color-palette"), color => {
             this.previewBlock.setColor(color);
@@ -231,24 +310,56 @@ class App{
         this.backgroundPalette = new ColorPalette(document.getElementById("background-palette"), color => {
             this.previewBlock.setBackground(color);
         });
-
+        
         this.symbolPalette = new SymbolPalette(document.getElementById("symbol-palette"), index => {
             this.previewBlock.setSymbol(index);
         });
         this.rotateLeftButton = document.getElementById("rotate-left");
         fastClick(this.rotateLeftButton, evt => {
             this.rotation = (this.rotation + 3) % 4;
-            this.previewBlock.setRotation(this.rotation);
+            this.previewBlock.setTransform(encodeTransform(this.rotation, this.flipX, this.flipY));
         });
         this.rotaterightButton = document.getElementById("rotate-right");
         fastClick(this.rotaterightButton, evt => {
             this.rotation = (this.rotation + 1) % 4;
-            this.previewBlock.setRotation(this.rotation);
+            this.previewBlock.setTransform(encodeTransform(this.rotation, this.flipX, this.flipY));
+        });
+        this.flipXButton = document.getElementById("flip-x");
+        fastClick(this.flipXButton, evt => {
+            this.flipX = !this.flipX;
+            this.previewBlock.setTransform(encodeTransform(this.rotation, this.flipX, this.flipY));
+        });
+        this.flipYButton = document.getElementById("flip-y");
+        fastClick(this.flipYButton, evt => {
+            this.flipY = !this.flipY;
+            this.previewBlock.setTransform(encodeTransform(this.rotation, this.flipX, this.flipY));
         });
 
         this.clearButton = document.getElementById("clear");
         fastClick(this.clearButton, evt => {
-            this.blockArt.clear(this.colorPalette.index);
+            this.blockArt.clear(this.backgroundPalette.index);
+        });
+
+        this.symmetryXButton = document.getElementById("symmetry-x");
+        fastClick(this.symmetryXButton, evt => {
+            this.setSymmetryX(!this.symmetryX);
+        });
+
+        this.symmetryYButton = document.getElementById("symmetry-y");
+        fastClick(this.symmetryYButton, evt => {
+            this.setSymmetryY(!this.symmetryY);
+        });
+        
+        this.setSymmetryX(false);
+        this.setSymmetryY(false);
+        this.colorPalette.setIndex(6);
+        this.backgroundPalette.setIndex(0);
+        this.symbolPalette.setIndex(0);
+
+        fastClick(document.getElementById("swap-colors"), evt => {
+            var color = this.colorPalette.index;
+            this.colorPalette.setIndex(this.backgroundPalette.index);
+            this.backgroundPalette.setIndex(color);
         });
 
         this.blockArt = new BlockArt(document.getElementById("block-art"), 8, 8, this.readData());
@@ -265,6 +376,7 @@ class App{
     }
 }
 
-//document.addEventListener("touchstart", evt => evt.preventDefault());
-var app = new App();
-document.body.onload = () => app.run();
+document.addEventListener("DOMContentLoaded", () => {
+    var app = new App();
+    app.run();
+});

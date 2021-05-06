@@ -49,12 +49,55 @@ body{
     background-image: url("svg/redo-solid.svg");
 }
 
+#flip-x{
+    margin: auto;
+    top: 0.25em;
+    left: 4em;
+    right: 0;
+    background-image: url("svg/arrows-alt-h-solid.svg");
+}
+
+#flip-y{
+    margin: auto;
+    top: 0.25em;
+    left: -4em;
+    right: 0;
+    background-image: url("svg/arrows-alt-h-solid.svg");
+    transform: rotate(90deg);
+}
+
 #clear{
     margin: auto;
     bottom: 0.25em;
     left: 0;
     right: 0;
     background-image: url("svg/trash-alt-solid.svg");
+}
+
+#swap-colors{
+    margin: auto;
+    left: 1.125em;
+    top: 0;
+    bottom: 0;
+    background-image: url("svg/arrows-alt-h-solid.svg");
+    transform: rotate(90deg);
+}
+
+#symmetry-x{
+    margin: auto;
+    bottom: 0.25em;
+    left: -2em;
+    right: 0;
+    background-image: url("svg/exchange-alt-solid.svg");
+}
+
+#symmetry-y{
+    margin: auto;
+    bottom: 0.25em;
+    left: 2em;
+    right: 0;
+    background-image: url("svg/exchange-alt-solid.svg");
+    transform: rotate(90deg);
 }
 
 #color-palette{
@@ -75,6 +118,14 @@ body{
     right: 0;
     font-size: 0.7em;
     width: 4em;
+}
+
+#symbol-palette div{
+    opacity: 0.25;
+}
+
+#symbol-palette div.selected{
+    opacity: 1;
 }
 
 .palette div{
@@ -116,4 +167,8 @@ body{
     #editor{
         display: block;
     }
+}
+
+.disabled {
+    opacity: 0.25;
 }
