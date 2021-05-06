@@ -19,6 +19,10 @@ var symbols = [
     '<svg viewBox="0 0 512 512"><circle fill="currentColor" cx="0" cy="0" r="512" /></svg>',
 ]
 
+function clamp(x){
+    return Math.max(0, Math.min(1, x));
+}
+
 class Block{
     constructor(element){
         this.element = element;
@@ -140,7 +144,9 @@ class Palette{
         }
         
         this.index = index;
-        this.onChangeCallback?.(index);
+        if (this.onChangeCallback){
+            this.onChangeCallback(index);
+        }
     }
 }
 
@@ -193,8 +199,8 @@ class App{
         var rect = this.blockArt.element.getBoundingClientRect();
         var clientX = isTouchEvent ? evt.touches[0].clientX : evt.clientX;
         var clientY = isTouchEvent ? evt.touches[0].clientY : evt.clientY;
-        var x = Math.floor(this.blockArt.width * (clientX - rect.x) / rect.width);
-        var y = Math.floor(this.blockArt.height * (clientY - rect.y) / rect.height);
+        var x = Math.floor(this.blockArt.width * clamp((clientX - rect.x) / rect.width));
+        var y = Math.floor(this.blockArt.height * clamp((clientY - rect.y) / rect.height));
 
         this.blockArt.setPixel(x, y, {
             symbol: this.symbolPalette.index,
