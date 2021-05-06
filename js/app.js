@@ -199,8 +199,8 @@ class App{
         var rect = this.blockArt.element.getBoundingClientRect();
         var clientX = isTouchEvent ? evt.touches[0].clientX : evt.clientX;
         var clientY = isTouchEvent ? evt.touches[0].clientY : evt.clientY;
-        var x = Math.floor(this.blockArt.width * clamp((clientX - rect.x) / rect.width));
-        var y = Math.floor(this.blockArt.height * clamp((clientY - rect.y) / rect.height));
+        var x = Math.floor(this.blockArt.width * clamp((clientX - rect.left) / rect.width));
+        var y = Math.floor(this.blockArt.height * clamp((clientY - rect.top) / rect.height));
 
         this.blockArt.setPixel(x, y, {
             symbol: this.symbolPalette.index,
@@ -255,6 +255,6 @@ class App{
     }
 }
 
-// document.addEventListener("touchstart", evt => evt.preventDefault())
+//document.addEventListener("touchstart", evt => evt.preventDefault());
 var app = new App();
 document.body.onload = () => app.run();
