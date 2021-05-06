@@ -23,6 +23,16 @@ function clamp(x){
     return Math.max(0, Math.min(1, x));
 }
 
+function fastClick(target, callback){
+    target.addEventListener("mousedown", clicked);
+    target.addEventListener("touchstart", clicked);
+    
+    function clicked(evt){
+        evt.preventDefault();
+        callback(evt);
+    }
+}
+
 class Block{
     constructor(element){
         this.element = element;
@@ -130,7 +140,7 @@ class Palette{
         for (let i = 0; i < this.options.length; i++){
             var optionElement = document.createElement("div");
             this.setupOption(optionElement, i);
-            optionElement.addEventListener("click", evt => this.setIndex(i))
+            fastClick(optionElement,evt => this.setIndex(i));
             this.element.appendChild(optionElement);
         }
     }
@@ -226,18 +236,18 @@ class App{
             this.previewBlock.setSymbol(index);
         });
         this.rotateLeftButton = document.getElementById("rotate-left");
-        this.rotateLeftButton.addEventListener("click", evt => {
+        fastClick(this.rotateLeftButton, evt => {
             this.rotation = (this.rotation + 3) % 4;
             this.previewBlock.setRotation(this.rotation);
         });
         this.rotaterightButton = document.getElementById("rotate-right");
-        this.rotaterightButton.addEventListener("click", evt => {
+        fastClick(this.rotaterightButton, evt => {
             this.rotation = (this.rotation + 1) % 4;
             this.previewBlock.setRotation(this.rotation);
         });
 
         this.clearButton = document.getElementById("clear");
-        this.clearButton.addEventListener("click", evt => {
+        fastClick(this.clearButton, evt => {
             this.blockArt.clear(this.colorPalette.index);
         });
 
