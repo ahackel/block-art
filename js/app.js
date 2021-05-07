@@ -1,3 +1,5 @@
+var imageCount = 8;
+
 var colors = [
     "#000000", "#222034", "#45283c", "#663931",
     "#8f563b", "#df7126", "#d9a066", "#eec39a",
@@ -15,15 +17,30 @@ var symbols = [
     '<svg viewBox="0 0 512 512"><rect fill="currentColor" width="256" height="256" /></svg>',
     '<svg viewBox="0 0 512 512"><rect fill="currentColor" width="256" height="256" /><<rect fill="currentColor" x="256" y="256" width="256" height="256" /></svg>',
     '<svg viewBox="0 0 512 512"><polygon fill="currentColor" points="0,0 0,512 512,0" /></svg>',
-    '<svg viewBox="0 0 512 512"><polygon fill="currentColor" points="0,0 0,512 256,0" /></svg>',
     '<svg viewBox="0 0 512 512"><polygon fill="currentColor" points="0,0 256,256 512,0" /></svg>',
     '<svg viewBox="0 0 512 512"><polygon fill="currentColor" points="0,0 256,256 512,0" /><polygon fill="currentColor" points="0,512 256,256 512,512" /></svg>',
-    '<svg viewBox="0 0 512 512"><circle fill="currentColor" cx="256" cy="256" r="256" /><polygon fill="currentColor" points="0,0 256,0 256,512 0,512" /></svg>',
+    '<svg viewBox="0 0 512 512"><polygon fill="currentColor" points="256,0 512,256 256,512 0,256" /></svg>',
+    '<svg viewBox="0 0 512 512"><polygon fill="currentColor" points="0,0 256,512 512,0" /></svg>',
+    '<svg viewBox="0 0 512 512"><polygon fill="currentColor" points="0,0 0,512 256,0" /></svg>',
+    '<svg viewBox="0 0 512 512"><polygon fill="currentColor" points="0,0 256,512 256,0" /></svg>',
+    '<svg viewBox="0 0 512 512"><polygon fill="currentColor" points="0,0 256,256 256,0" /></svg>',
+    '<svg viewBox="0 0 512 512"><polygon fill="currentColor" points="256,0 512,0 512,512 0,512 0,256" /></svg>',
+    '<svg viewBox="0 0 512 512"><polygon fill="currentColor" points="256,0 512,0 512,512 256,512 0,256" /></svg>',
+    '<svg viewBox="0 0 512 512"><polygon fill="currentColor" points="256,0 512,0 512,256 256,512 0,512 0,256" /></svg>',
+    '<svg viewBox="0 0 512 512"><polygon fill="currentColor" points="256,0 512,0 512,256 256,512 0,256" /></svg>',
+    '<svg viewBox="0 0 512 512"><rect fill="currentColor" width="788" height="788" rx="256"/></svg>',
+    '<svg viewBox="0 0 512 512"><rect fill="currentColor" width="788" height="512" rx="256"/></svg>',
+    '<svg viewBox="0 0 512 512"><circle fill="currentColor" cx="256" cy="256" r="256" /><rect x="256" fill="currentColor" width="256" height="256" /><<rect fill="currentColor" y="256" width="256" height="256" /></svg>',
+    '<svg viewBox="0 0 512 512"><circle fill="currentColor" cx="256" cy="256" r="256" /><rect fill="currentColor" x="256" width="256" height="256" /></svg>',
     '<svg viewBox="0 0 512 512"><circle fill="currentColor" cx="256" cy="256" r="256" /></svg>',
+    '<svg viewBox="0 0 512 512"><circle fill="currentColor" cx="512" cy="256" r="256" /></svg>',
+    '<svg viewBox="0 0 512 512"><path fill="currentColor" d="M256,0 a256,256 0 0 0 0,512" /></svg>',
+    '<svg viewBox="0 0 512 512"><circle fill="currentColor" cx="512" cy="256" r="256" /><circle fill="currentColor" cy="256" r="256" /></svg>',
     '<svg viewBox="0 0 512 512"><circle fill="currentColor" cx="256" cy="256" r="128" /></svg>',
-    '<svg viewBox="0 0 512 512"><circle fill="currentColor" cx="0" cy="0" r="512" /></svg>',
-    '<svg viewBox="0 0 512 512"><circle fill="currentColor" cx="0" cy="0" r="256" /></svg>',
-    '<svg viewBox="0 0 512 512"><circle fill="currentColor" cx="0" cy="0" r="256" /><circle fill="currentColor" cx="512" cy="512" r="256" /></svg>',
+    '<svg viewBox="0 0 512 512"><circle fill="currentColor" r="512" /></svg>',
+    '<svg viewBox="0 0 512 512"><circle fill="currentColor" r="256" /></svg>',
+    '<svg viewBox="0 0 512 512"><circle fill="currentColor" r="256" /><circle fill="currentColor" cx="512" cy="512" r="256" /></svg>',
+    '<svg viewBox="0 0 2 2"><path fill="currentColor" d="M1,0 A1 1 0 0 0 2 1 A 1 1 0 0 0 1 2 A 1 1 0 0 0 0 1 A 1 1 0 0 0 1 0" /></svg>',
     '<svg viewBox="0 0 512 512"><circle fill="none" stroke="currentColor" stroke-width="256" cx="0" cy="0" r="384" /></svg>',
     '<svg viewBox="0 0 512 512"><circle fill="none" stroke="currentColor" stroke-width="128" cx="256" cy="256" r="192" /></svg>',
     '<svg viewBox="0 0 512 512"><circle fill="none" stroke="currentColor" stroke-width="128" cx="0" cy="0" r="256" /></svg>',
@@ -115,6 +132,15 @@ class BlockArt{
         this.element.style.height = this.height + "em";
         this.data = data || new Int8Array(this.width * this.height * 4);
         this.createBlocks();
+    }
+    
+    loadData(data){
+        this.data = data || new Int8Array(this.width * this.height * 4);
+        for (var y = 0; y < this.height; y++) {
+            for (var x = 0; x < this.width; x++) {
+                this.updateBlock(x, y);
+            }
+        }
     }
     
     getPixel(x, y) {
@@ -234,20 +260,12 @@ class SymbolPalette extends Palette{
 
 
 class App{
-    storeData(){
-        var data = this.blockArt.data;
-        localStorage.setItem("data", JSON.stringify(Array.from(data)));
-    }
 
-    readData(){
-        var json = localStorage.getItem("data");
-        if (json){
-            return new Int8Array(JSON.parse(json));
+    mouseDown(evt) {
+        if (!this.isEditing){
+            return;
         }
-        return null;
-    }
-
-    changeBlockColor(evt) {
+        
         var isTouchEvent = evt.type.includes("touch");
         var buttonDown = isTouchEvent ? evt.touches.length === 1 : evt.buttons === 1;
 
@@ -297,7 +315,15 @@ class App{
         
         evt.preventDefault();
     }
-    
+
+    mouseUp(evt) {
+        if (!this.isEditing) {
+            return;
+        }
+        this.storeImage();
+    }
+
+
     setSymmetryX(on){
         this.symmetryX = on;
         this.symmetryXButton.classList.toggle("disabled", !on);
@@ -309,6 +335,12 @@ class App{
     }
     
     run() {
+        this.isEditing = false;
+        this.imageIndex = 0;
+
+        this.viewerContainer = document.getElementById("viewer");
+        this.editorContainer = document.getElementById("editor");
+
         this.rotation = 0;
         this.flipX = false;
         this.flipY = false;
@@ -372,17 +404,68 @@ class App{
             this.backgroundPalette.setIndex(color);
         });
 
-        this.blockArt = new BlockArt(document.getElementById("block-art"), 8, 8, this.readData());
+        fastClick(document.getElementById("edit"), evt => {
+            this.setEditMode(true);
+        });
 
-        this.blockArt.element.addEventListener("mousedown", evt => this.changeBlockColor(evt));
-        this.blockArt.element.addEventListener("mousemove", evt => this.changeBlockColor(evt));
-        this.blockArt.element.addEventListener("touchstart", evt => this.changeBlockColor(evt));
-        this.blockArt.element.addEventListener("touchmove", evt => this.changeBlockColor(evt));
+        fastClick(document.getElementById("view"), evt => {
+            this.setEditMode(false);
+        });
 
-        this.blockArt.element.addEventListener("mouseup", evt => this.storeData());
-        this.blockArt.element.addEventListener("touchend", evt => this.storeData());
+        fastClick(document.getElementById("previous"), evt => {
+            this.changeImage(-1);
+        });
+
+        fastClick(document.getElementById("next"), evt => {
+            this.changeImage(1);
+        });
+
+        this.blockArt = new BlockArt(document.getElementById("block-art"), 8, 8, this.readData("image0"));
+
+        this.blockArt.element.addEventListener("mousedown", evt => this.mouseDown(evt));
+        this.blockArt.element.addEventListener("mousemove", evt => this.mouseDown(evt));
+        this.blockArt.element.addEventListener("touchstart", evt => this.mouseDown(evt));
+        this.blockArt.element.addEventListener("touchmove", evt => this.mouseDown(evt));
+
+        this.blockArt.element.addEventListener("mouseup", evt => this.mouseUp());
+        this.blockArt.element.addEventListener("touchend", evt => this.mouseUp());
         
         document.body.appendChild(this.blockArt.element);
+        this.setEditMode(this.isEditing);
+    }
+    
+    setEditMode(isEditing){
+        this.isEditing = isEditing;
+        this.viewerContainer.style.display = !isEditing ? "block" : "none";
+        this.editorContainer.style.display = isEditing ? "block" : "none";
+        this.blockArt.element.classList.toggle("editing", isEditing);
+    }
+
+    changeImage(delta) {
+        this.loadImage((this.imageIndex + imageCount + delta) % imageCount);
+    }
+
+    loadImage(index) {
+        this.imageIndex = index;
+        let key = "image" + this.imageIndex;
+        var data = this.readData(key);
+        this.blockArt.loadData(data);
+        console.log("loaded " + key);
+    }
+
+    storeImage(){
+        var data = this.blockArt.data;
+        let key = "image" + this.imageIndex;
+        localStorage.setItem(key, JSON.stringify(Array.from(data)));
+        console.log("stored " + key);
+    }
+
+    readData(key){
+        var json = localStorage.getItem(key);
+        if (json){
+            return new Int8Array(JSON.parse(json));
+        }
+        return null;
     }
 }
 

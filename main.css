@@ -25,6 +25,12 @@ body{
     height: 100%;
 }
 
+#viewer{
+    display: none;
+    width: 100%;
+    height: 100%;    
+}
+
 .button{
     width: 0.5em;
     height: 0.5em;
@@ -38,7 +44,7 @@ body{
     top: 0.25em;
     left: -2em;
     right: 0;
-    background-image: url("svg/undo-solid.svg");
+    background-image: url("svg/redo-solid.svg");
 }
 
 #rotate-right{
@@ -47,6 +53,35 @@ body{
     left: 2em;
     right: 0;
     background-image: url("svg/redo-solid.svg");
+}
+
+#previous{
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    left: 0.25em;
+    background-image: url("svg/chevron-left-solid.svg");
+}
+
+#next{
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    right: 0.25em;
+    background-image: url("svg/chevron-left-solid.svg");
+    transform: rotate(180deg);
+}
+
+#edit{
+    bottom: 0.25em;
+    right: 0.25em;
+    background-image: url("svg/pencil-alt-solid.svg");
+}
+
+#view{
+    bottom: 0.25em;
+    right: 0.25em;
+    background-image: url("svg/pencil-alt-solid.svg");
 }
 
 #flip-x{
@@ -159,14 +194,8 @@ body{
     margin: auto;
 }
 
-@media (orientation: landscape) {
-    .block-art .block {
-        outline: 1px dashed rgba(255, 255, 255, 0.15);
-        /*outline-offset: -1px;*/
-    }
-    #editor{
-        display: block;
-    }
+.block-art.editing .block {
+    outline: 1px dashed rgba(255, 255, 255, 0.15);
 }
 
 .disabled {
