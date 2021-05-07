@@ -58,13 +58,8 @@ function clamp(x){
     return Math.max(0, Math.min(1, x));
 }
 
-function flip(rotation){
-    switch (rotation){
-        case 0: return 1;
-        case 1: return 0;
-        case 2: return 3;
-        case 3: return 2;
-    }
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
 }
 
 function encodeTransform(rotation, flipX, flipY){
@@ -118,7 +113,8 @@ class Block{
         var t = decodeTransform(transform);
         var scaleX = t.flipX ? -1 : 1;
         var scaleY = t.flipY ? -1 : 1;
-        this.element.style.transform = "scale(" + scaleX + "," + scaleY +") rotate(" + t.rotation * 90 + "deg)";
+        var rotation = t.rotation * 90;
+        this.element.style.transform = "scale(" + scaleX + "," + scaleY +") rotate(" + rotation + "deg)";
     }
 }
 
@@ -130,12 +126,18 @@ class BlockArt{
         this.element.classList.add("block-art");
         this.element.style.width = this.width + "em";
         this.element.style.height = this.height + "em";
-        this.data = data || new Int8Array(this.width * this.height * 4);
         this.createBlocks();
+        this.loadData(data);
     }
     
     loadData(data){
-        this.data = data || new Int8Array(this.width * this.height * 4);
+        if (data == null){
+            this.data = new Int8Array(this.width * this.height * 4);
+            this.randomize();
+            return;
+        }
+        
+        this.data = data; 
         for (var y = 0; y < this.height; y++) {
             for (var x = 0; x < this.width; x++) {
                 this.updateBlock(x, y);
@@ -160,6 +162,38 @@ class BlockArt{
         this.data[index + 2] = pixel.background || 0;
         this.data[index + 3] = pixel.transform || 0;
         this.updateBlock(x, y);
+    }
+    
+    setPixelSymmetric(x, y, pixel, symmetryX, symmetryY){
+        this.setPixel(x, y, pixel);
+        var t = decodeTransform(pixel.transform);
+
+        if (symmetryX){
+            this.setPixel(this.width - x - 1, y, {
+                symbol: pixel.symbol,
+                color: pixel.color,
+                background: pixel.background,
+                transform: encodeTransform(t.rotation, !t.flipX, t.flipY)
+            });
+        }
+
+        if (symmetryY){
+            this.setPixel(x, this.height - y - 1, {
+                symbol: pixel.symbol,
+                color: pixel.color,
+                background: pixel.background,
+                transform: encodeTransform(t.rotation, t.flipX, !t.flipY)
+            });
+        }
+
+        if (symmetryX && symmetryY){
+            this.setPixel(this.width - x - 1, this.height - y - 1, {
+                symbol: pixel.symbol,
+                color: pixel.color,
+                background: pixel.background,
+                transform: encodeTransform(t.rotation, !t.flipX, !t.flipY)
+            });
+        }
     }
 
     getIndex(x, y) {
@@ -187,7 +221,6 @@ class BlockArt{
                 this.element.appendChild(blockElement);
                 var block = new Block(blockElement);
                 this.blocks.push(block);
-                this.updateBlock(x, y);
             }
         }
     }
@@ -196,6 +229,40 @@ class BlockArt{
         for (var y = 0; y < this.height; y++) {
             for (var x = 0; x < this.width; x++) {
                 this.setPixel(x, y, {color: color})
+            }
+        }
+    }
+    
+    randomize() {
+        var colorCount = getRandomInt(5) + 3;
+        
+        var myColors = [];
+        for (let i = 0; i < colorCount; i++) {
+            myColors.push(getRandomInt(colors.length));
+        }
+        
+        var tileCount = getRandomInt(7) + 3;
+        
+        var tiles = [];
+        for (let i = 0; i < 3; i++) {
+            tiles.push(getRandomInt(symbols.length));
+        }
+        // add next tiles in list to have some similar tiles:
+        for (let i = 3; i < tileCount; i++) {
+            tiles.push((tiles[i-1] + 1) % symbols.length);
+        }
+        
+        var symmetryX = true;
+        var symmetryY = getRandomInt(2);
+        
+        for (var y = 0; y < this.height; y++) {
+            for (var x = 0; x < this.width; x++) {
+                this.setPixelSymmetric(x, y, {
+                    color: myColors[getRandomInt(myColors.length)],
+                    background: myColors[getRandomInt(myColors.length)],
+                    symbol: tiles[getRandomInt(tiles.length)],
+                    transform: getRandomInt(16)
+                }, symmetryX, symmetryY);
             }
         }
     }
@@ -279,39 +346,14 @@ class App{
         var x = Math.floor(this.blockArt.width * clamp((clientX - rect.left) / rect.width));
         var y = Math.floor(this.blockArt.height * clamp((clientY - rect.top) / rect.height));
 
-        this.blockArt.setPixel(x, y, {
+        this.blockArt.setPixelSymmetric(x, y, {
             symbol: this.symbolPalette.index,
             color: this.colorPalette.index,
             background: this.backgroundPalette.index,
             transform: encodeTransform(this.rotation, this.flipX, this.flipY)
-        });
+        }, this.symmetryX, this.symmetryY);
         
-        if (this.symmetryX){
-            this.blockArt.setPixel(this.blockArt.width - x - 1, y, {
-                symbol: this.symbolPalette.index,
-                color: this.colorPalette.index,
-                background: this.backgroundPalette.index,
-                transform: encodeTransform(this.rotation, !this.flipX, this.flipY)
-            });
-        }
-        
-        if (this.symmetryY){
-            this.blockArt.setPixel(x, this.blockArt.height - y - 1, {
-                symbol: this.symbolPalette.index,
-                color: this.colorPalette.index,
-                background: this.backgroundPalette.index,
-                transform: encodeTransform(this.rotation, this.flipX, !this.flipY)
-            });
-        }
-        
-        if (this.symmetryX && this.symmetryY){
-            this.blockArt.setPixel(this.blockArt.width - x - 1, this.blockArt.height - y - 1, {
-                symbol: this.symbolPalette.index,
-                color: this.colorPalette.index,
-                background: this.backgroundPalette.index,
-                transform: encodeTransform(this.rotation, !this.flipX, !this.flipY)
-            });
-        }
+
         
         evt.preventDefault();
     }
@@ -410,6 +452,10 @@ class App{
 
         fastClick(document.getElementById("view"), evt => {
             this.setEditMode(false);
+        });
+
+        fastClick(document.getElementById("randomize"), evt => {
+            this.blockArt.randomize();
         });
 
         fastClick(document.getElementById("previous"), evt => {

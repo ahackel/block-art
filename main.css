@@ -55,6 +55,12 @@ body{
     background-image: url("svg/redo-solid.svg");
 }
 
+#randomize{
+    bottom: 0.25em;
+    right: 1.25em;
+    background-image: url("svg/dice-solid.svg");
+}
+
 #previous{
     margin: auto;
     top: 0;
