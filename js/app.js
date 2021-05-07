@@ -456,6 +456,7 @@ class App{
 
         fastClick(document.getElementById("randomize"), evt => {
             this.blockArt.randomize();
+            this.storeImage();
         });
 
         fastClick(document.getElementById("previous"), evt => {
