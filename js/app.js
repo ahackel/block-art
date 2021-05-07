@@ -451,6 +451,7 @@ class App{
         });
 
         fastClick(document.getElementById("view"), evt => {
+            this.storeImage();
             this.setEditMode(false);
         });
 
