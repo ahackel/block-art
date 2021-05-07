@@ -30,6 +30,8 @@ var symbols = [
     '<svg viewBox="0 0 512 512"><circle fill="none" stroke="currentColor" stroke-width="128" cx="0" cy="0" r="256" /><<circle fill="none" stroke="currentColor" stroke-width="128" cx="512" cy="512" r="256" /></svg>',
     '<svg viewBox="0 0 512 512"><rect fill="currentColor" y="192" width="512" height="128" /></svg>',
     '<svg viewBox="0 0 512 512"><rect fill="currentColor" y="192" width="512" height="128" /><rect fill="currentColor" x="192" width="128" height="512" /></svg>',
+    '<svg viewBox="0 0 512 512"><rect fill="currentColor" y="192" width="320" height="128" /><rect fill="currentColor" x="192" width="128" height="512" /></svg>',
+    '<svg viewBox="0 0 512 512"><rect fill="currentColor" y="192" width="320" height="128" /><rect fill="currentColor" x="192" width="128" height="320" /></svg>',
     '<svg viewBox="-20 -20 300 300"><path fill="currentColor" d="m55,237 74-228 74,228L9,96h240"/></svg>',
     '<svg viewBox="-4 -4 28 28"><path fill="currentColor" d="M14.75 1A5.24 5.24 0 0 0 10 4 5.24 5.24 0 0 0 0 6.25C0 11.75 10 19 10 19s10-7.25 10-12.75A5.25 5.25 0 0 0 14.75 1z"/></svg>'
 
