@@ -487,6 +487,7 @@ class App{
         this.viewerContainer.style.display = !isEditing ? "block" : "none";
         this.editorContainer.style.display = isEditing ? "block" : "none";
         this.blockArt.element.classList.toggle("editing", isEditing);
+        this.blockArt.element.classList.toggle("viewing", !isEditing);
     }
 
     changeImage(delta) {

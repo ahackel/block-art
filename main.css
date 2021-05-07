@@ -193,6 +193,10 @@ body{
     height: 1em;
 }
 
+.block-art.viewing {
+    font-size: 12.5vh;
+}
+
 #preview-block{
     position: absolute;
     left: 0;
