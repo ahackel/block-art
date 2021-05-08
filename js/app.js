@@ -548,7 +548,12 @@ class App{
     }
 }
 
+function preventOverScroll() {
+    document.ontouchmove = event => { event.preventDefault();}
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+    preventOverScroll();
     var app = new App();
     app.run();
 });

@@ -162,11 +162,11 @@ body{
 }
 
 #symbol-palette div{
-    opacity: 0.25;
+    color: grey!important;
 }
 
 #symbol-palette div.selected{
-    opacity: 1;
+    color: lightblue!important;
 }
 
 .palette div{
