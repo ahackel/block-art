@@ -279,14 +279,44 @@ class Palette{
     }
 
     createOptions() {
+        this.optionElements = [];
+        this.element.addEventListener("mousedown", evt => this.mouseDown(evt));
+        this.element.addEventListener("mousemove", evt => this.mouseDown(evt));
+        this.element.addEventListener("touchstart", evt => this.mouseDown(evt));
+        this.element.addEventListener("touchmove", evt => this.mouseDown(evt));
+
+
         for (let i = 0; i < this.options.length; i++){
             var optionElement = document.createElement("div");
             this.setupOption(optionElement, i);
-            fastClick(optionElement,evt => this.setIndex(i));
             this.element.appendChild(optionElement);
+            this.optionElements[i] = optionElement;
         }
     }
-    
+
+    mouseDown(evt) {
+        var isTouchEvent = evt.type.includes("touch");
+        var buttonDown = isTouchEvent ? evt.touches.length === 1 : evt.buttons === 1;
+
+        if (!buttonDown){
+            return;
+        }
+
+        var clientX = isTouchEvent ? evt.touches[0].clientX : evt.clientX;
+        var clientY = isTouchEvent ? evt.touches[0].clientY : evt.clientY;
+
+        var touchedElement = document.elementFromPoint(clientX, clientY);
+
+        for (let i = 0; i < this.optionElements.length; i++) {
+            if (touchedElement == this.optionElements[i] && i != this.index){
+                this.setIndex(i);
+            }
+        }
+
+        evt.preventDefault();
+    }
+
+
     setupOption(optionElement, index){
     }
 

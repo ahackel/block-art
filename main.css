@@ -3,6 +3,7 @@
     -webkit-user-select: none;
     user-select: none;
     touch-action: none;
+    overscroll-behavior: none;
 }
 
 svg{
@@ -16,7 +17,6 @@ body{
     background-color: black;
     font-size: 64px;
     margin: 0;
-    overscroll-behavior: none;
 }
 
 #editor{
@@ -210,4 +210,14 @@ body{
 
 .disabled {
     opacity: 0.25;
+}
+
+@media (max-width: 400px), (max-height: 400px){
+    body{
+        font-size: 32px;
+    }
+
+    .block-art.viewing {
+        font-size: 40px;
+    }
 }
