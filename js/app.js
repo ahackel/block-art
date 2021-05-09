@@ -553,7 +553,7 @@ function preventOverScroll() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    preventOverScroll();
+    // preventOverScroll();
     var app = new App();
     app.run();
 });

@@ -4,6 +4,7 @@
     user-select: none;
     touch-action: none;
     overscroll-behavior: none;
+    overflow: hidden;
 }
 
 svg{
@@ -194,7 +195,7 @@ body{
 }
 
 .block-art.viewing {
-    font-size: 92px;
+    font-size: 125%;
 }
 
 #preview-block{
@@ -212,12 +213,14 @@ body{
     opacity: 0.25;
 }
 
-@media (max-width: 400px), (max-height: 400px){
+@media (max-width: 728px), (max-height: 728px){
     body{
-        font-size: 32px;
+        font-size: 56px;
     }
+}
 
-    .block-art.viewing {
-        font-size: 40px;
+@media (max-width: 375px), (max-height: 375px){
+    body{
+        font-size: 28px;
     }
 }
