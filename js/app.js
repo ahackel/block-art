@@ -1,6 +1,6 @@
-var imageCount = 8;
+let imageCount = 8;
 
-var colors = [
+let colors = [
     "#000000", "#222034", "#45283c", "#663931",
     "#8f563b", "#df7126", "#d9a066", "#eec39a",
     "#fbf236", "#99e550", "#6abe30", "#37946e",
@@ -11,7 +11,7 @@ var colors = [
     "#d95763", "#d77bba", "#8f974a", "#8a6f30",
 ];
 
-var symbols = [
+let symbols = [
     '<svg viewBox="0 0 512 512"><rect fill="currentColor" width="512" height="512" /></svg>',
     '<svg viewBox="0 0 512 512"><rect fill="currentColor" width="512" height="256" /></svg>',
     '<svg viewBox="0 0 512 512"><rect fill="currentColor" width="256" height="256" /></svg>',
@@ -28,8 +28,8 @@ var symbols = [
     '<svg viewBox="0 0 512 512"><polygon fill="currentColor" points="256,0 512,0 512,512 256,512 0,256" /></svg>',
     '<svg viewBox="0 0 512 512"><polygon fill="currentColor" points="256,0 512,0 512,256 256,512 0,512 0,256" /></svg>',
     '<svg viewBox="0 0 512 512"><polygon fill="currentColor" points="256,0 512,0 512,256 256,512 0,256" /></svg>',
-    '<svg viewBox="0 0 512 512"><rect fill="currentColor" width="788" height="788" rx="256"/></svg>',
-    '<svg viewBox="0 0 512 512"><rect fill="currentColor" width="788" height="512" rx="256"/></svg>',
+    '<svg viewBox="0 0 512 512"><rect fill="currentColor" width="788" height="788" rx="256" /></svg>',
+    '<svg viewBox="0 0 512 512"><rect fill="currentColor" width="788" height="512" rx="256" /></svg>',
     '<svg viewBox="0 0 512 512"><circle fill="currentColor" cx="256" cy="256" r="256" /><rect x="256" fill="currentColor" width="256" height="256" /><<rect fill="currentColor" y="256" width="256" height="256" /></svg>',
     '<svg viewBox="0 0 512 512"><circle fill="currentColor" cx="256" cy="256" r="256" /><rect fill="currentColor" x="256" width="256" height="256" /></svg>',
     '<svg viewBox="0 0 512 512"><circle fill="currentColor" cx="256" cy="256" r="256" /></svg>',
@@ -50,8 +50,20 @@ var symbols = [
     '<svg viewBox="0 0 512 512"><rect fill="currentColor" y="192" width="320" height="128" /><rect fill="currentColor" x="192" width="128" height="512" /></svg>',
     '<svg viewBox="0 0 512 512"><rect fill="currentColor" y="192" width="320" height="128" /><rect fill="currentColor" x="192" width="128" height="320" /></svg>',
     '<svg viewBox="-20 -20 300 300"><path fill="currentColor" d="m55,237 74-228 74,228L9,96h240"/></svg>',
-    '<svg viewBox="-4 -4 28 28"><path fill="currentColor" d="M14.75 1A5.24 5.24 0 0 0 10 4 5.24 5.24 0 0 0 0 6.25C0 11.75 10 19 10 19s10-7.25 10-12.75A5.25 5.25 0 0 0 14.75 1z"/></svg>'
-
+    '<svg viewBox="-4 -4 28 28"><path fill="currentColor" d="M14.75 1A5.24 5.24 0 0 0 10 4 5.24 5.24 0 0 0 0 6.25C0 11.75 10 19 10 19s10-7.25 10-12.75A5.25 5.25 0 0 0 14.75 1z"/></svg>',
+    '<svg viewBox="0 0 8 8"><rect fill="none" stroke="currentColor" stroke-width="2" x="1" y="1" width="6" height="6" /></svg>',
+    '<svg viewBox="0 0 4 4"><circle fill="currentColor" cx="1" cy="1" r="1" /></svg>',
+    '<svg viewBox="0 0 4 4"><circle fill="currentColor" cx="1" cy="1" r="1" /><circle fill="currentColor" cx="3" cy="1" r="1" /></svg>',
+    '<svg viewBox="0 0 4 4"><circle fill="currentColor" cx="1" cy="1" r="1" /><circle fill="currentColor" cx="3" cy="1" r="1" /><circle fill="currentColor" cx="1" cy="3" r="1" /></svg>',
+    '<svg viewBox="0 0 4 4"><circle fill="currentColor" cx="1" cy="1" r="1" /><circle fill="currentColor" cx="3" cy="1" r="1" /><circle fill="currentColor" cx="1" cy="3" r="1" /><circle fill="currentColor" cx="3" cy="3" r="1" /></svg>',
+    '<svg viewBox="0 0 4 4"><polygon fill="currentColor" points="0,2 1,1 3,3 4,2 4,4 0,4" /></svg>',
+    '<svg viewBox="0 0 4 4"><path fill="none" stroke="currentColor" stroke-width="1" d="M 0 0 L 4 4" /></svg>',
+    '<svg viewBox="0 0 4 4"><path fill="none" stroke="currentColor" stroke-width="1" d="M 0 0 L 4 4 M 0 4 L 4 0" /></svg>',
+    '<svg viewBox="0 0 4 4"><rect fill="currentColor" width="4" height="1" /></svg>',
+    '<svg viewBox="0 0 4 4"><circle fill="currentColor" cx="0" cy="-4" r="5.65" /></svg>',
+    '<svg viewBox="0 0 4 4"><rect fill="currentColor" width="1" height="1" /><rect fill="currentColor" x="3" width="1" height="1" /><rect fill="currentColor" y="3" width="1" height="1" /><rect fill="currentColor" x="3" y="3" width="1" height="1" /></svg>',
+    '<svg viewBox="0 0 4 4"><path fill="currentColor" d="M 0 0 L 3 1 L 4 4 L 1 3 Z"/></svg>',
+    '<svg viewBox="0 0 4 4"><path fill="currentColor" d="M 0 0 L 3 1 L 4 4 L 0 4 Z"/></svg>',
 ]
 
 function clamp(x){
@@ -63,7 +75,7 @@ function getRandomInt(max) {
 }
 
 function encodeTransform(rotation, flipX, flipY){
-    var transform = rotation;
+    let transform = rotation;
     if (flipX){
         transform += 4;
     }
@@ -110,10 +122,10 @@ class Block{
     }
     
     setTransform(transform){
-        var t = decodeTransform(transform);
-        var scaleX = t.flipX ? -1 : 1;
-        var scaleY = t.flipY ? -1 : 1;
-        var rotation = t.rotation * 90;
+        let t = decodeTransform(transform);
+        let scaleX = t.flipX ? -1 : 1;
+        let scaleY = t.flipY ? -1 : 1;
+        let rotation = t.rotation * 90;
         this.element.style.transform = "scale(" + scaleX + "," + scaleY +") rotate(" + rotation + "deg)";
     }
 }
@@ -138,15 +150,15 @@ class BlockArt{
         }
         
         this.data = data; 
-        for (var y = 0; y < this.height; y++) {
-            for (var x = 0; x < this.width; x++) {
+        for (let y = 0; y < this.height; y++) {
+            for (let x = 0; x < this.width; x++) {
                 this.updateBlock(x, y);
             }
         }
     }
     
     getPixel(x, y) {
-        var index = 4 * this.getIndex(x, y);
+        let index = 4 * this.getIndex(x, y);
         return {
             symbol: this.data[index],
             color: this.data[index + 1],
@@ -156,7 +168,7 @@ class BlockArt{
     }
 
     setPixel(x, y, pixel){
-        var index = 4 * this.getIndex(x, y);
+        let index = 4 * this.getIndex(x, y);
         this.data[index] = pixel.symbol || 0;
         this.data[index + 1] = pixel.color || 0;
         this.data[index + 2] = pixel.background || 0;
@@ -166,7 +178,7 @@ class BlockArt{
     
     setPixelSymmetric(x, y, pixel, symmetryX, symmetryY){
         this.setPixel(x, y, pixel);
-        var t = decodeTransform(pixel.transform);
+        let t = decodeTransform(pixel.transform);
 
         if (symmetryX){
             this.setPixel(this.width - x - 1, y, {
@@ -205,8 +217,8 @@ class BlockArt{
     }
 
     updateBlock(x, y) {
-        var pixel = this.getPixel(x, y);
-        var block = this.getBlock(x, y);
+        let pixel = this.getPixel(x, y);
+        let block = this.getBlock(x, y);
         block.setSymbol(pixel.symbol);
         block.setColor(pixel.color);
         block.setBackground(pixel.background);
@@ -215,35 +227,35 @@ class BlockArt{
 
     createBlocks(){
         this.blocks = [];
-        for (var y = 0; y < this.height; y++) {
-            for (var x = 0; x < this.width; x++) {
-                var blockElement = document.createElement("div");
+        for (let y = 0; y < this.height; y++) {
+            for (let x = 0; x < this.width; x++) {
+                let blockElement = document.createElement("div");
                 this.element.appendChild(blockElement);
-                var block = new Block(blockElement);
+                let block = new Block(blockElement);
                 this.blocks.push(block);
             }
         }
     }
 
     clear(color) {
-        for (var y = 0; y < this.height; y++) {
-            for (var x = 0; x < this.width; x++) {
+        for (let y = 0; y < this.height; y++) {
+            for (let x = 0; x < this.width; x++) {
                 this.setPixel(x, y, {color: color})
             }
         }
     }
     
     randomize() {
-        var colorCount = getRandomInt(5) + 3;
+        let colorCount = getRandomInt(5) + 3;
         
-        var myColors = [];
+        let myColors = [];
         for (let i = 0; i < colorCount; i++) {
             myColors.push(getRandomInt(colors.length));
         }
         
-        var tileCount = getRandomInt(7) + 3;
+        let tileCount = getRandomInt(7) + 3;
         
-        var tiles = [];
+        let tiles = [];
         for (let i = 0; i < 3; i++) {
             tiles.push(getRandomInt(symbols.length));
         }
@@ -252,14 +264,49 @@ class BlockArt{
             tiles.push((tiles[i-1] + 1) % symbols.length);
         }
         
-        var symmetryX = true;
-        var symmetryY = getRandomInt(2);
+        let symmetryX = true;
+        let symmetryY = getRandomInt(2);
+
+        this.randomPattern(myColors, tiles, symmetryX, symmetryY);
+    }    
+    
+    randomize2(symmetryX, symmetryY) {
+        const maxColors = 8;
+        const maxTiles = 8;
         
-        for (var y = 0; y < this.height; y++) {
-            for (var x = 0; x < this.width; x++) {
+        let myColors = [];
+        let tiles = [];
+        
+        for (let y = 0; y < this.height; y++) {
+            for (let x = 0; x < this.width; x++) {
+                const pixel = this.getPixel(x, y);
+                if (myColors.length < maxColors && !myColors.includes(pixel.color)){
+                    myColors.push(pixel.color);
+                }
+                if (myColors.length < maxColors && !myColors.includes(pixel.background)){
+                    myColors.push(pixel.background);
+                }
+                if (tiles.length < maxTiles && !tiles.includes(pixel.symbol)){
+                    tiles.push(pixel.symbol);
+                }
+            }
+        }
+        
+        this.randomPattern(myColors, tiles, symmetryX, symmetryY);
+    }    
+    
+    randomPattern(myColors, tiles, symmetryX, symmetryY) {
+        for (let y = 0; y < this.height; y++) {
+            for (let x = 0; x < this.width; x++) {
+                const colorIndex = getRandomInt(myColors.length);
+                let backgroundIndex = getRandomInt(myColors.length);
+                if (myColors.length > 1 && backgroundIndex == colorIndex){
+                    backgroundIndex = (colorIndex + 1) % myColors.length;
+                }
+                
                 this.setPixelSymmetric(x, y, {
-                    color: myColors[getRandomInt(myColors.length)],
-                    background: myColors[getRandomInt(myColors.length)],
+                    color: myColors[colorIndex],
+                    background: myColors[backgroundIndex],
                     symbol: tiles[getRandomInt(tiles.length)],
                     transform: getRandomInt(16)
                 }, symmetryX, symmetryY);
@@ -287,7 +334,7 @@ class Palette{
 
 
         for (let i = 0; i < this.options.length; i++){
-            var optionElement = document.createElement("div");
+            let optionElement = document.createElement("div");
             this.setupOption(optionElement, i);
             this.element.appendChild(optionElement);
             this.optionElements[i] = optionElement;
@@ -295,20 +342,20 @@ class Palette{
     }
 
     mouseDown(evt) {
-        var isTouchEvent = evt.type.includes("touch");
-        var buttonDown = isTouchEvent ? evt.touches.length === 1 : evt.buttons === 1;
+        let isTouchEvent = evt.type.includes("touch");
+        let buttonDown = isTouchEvent ? evt.touches.length === 1 : evt.buttons === 1;
 
         if (!buttonDown){
             return;
         }
 
-        var clientX = isTouchEvent ? evt.touches[0].clientX : evt.clientX;
-        var clientY = isTouchEvent ? evt.touches[0].clientY : evt.clientY;
+        let clientX = isTouchEvent ? evt.touches[0].clientX : evt.clientX;
+        let clientY = isTouchEvent ? evt.touches[0].clientY : evt.clientY;
 
-        var touchedElement = document.elementFromPoint(clientX, clientY);
+        let touchedElement = document.elementFromPoint(clientX, clientY);
 
         for (let i = 0; i < this.optionElements.length; i++) {
-            if (touchedElement == this.optionElements[i] && i != this.index){
+            if (touchedElement === this.optionElements[i] && i !== this.index){
                 this.setIndex(i);
             }
         }
@@ -349,7 +396,7 @@ class SymbolPalette extends Palette{
     }
     
     setupOption(optionElement, index){
-        var block = new Block(optionElement);
+        let block = new Block(optionElement);
         block.setSymbol(index);
         block.setColor(20);
     }
@@ -363,18 +410,18 @@ class App{
             return;
         }
         
-        var isTouchEvent = evt.type.includes("touch");
-        var buttonDown = isTouchEvent ? evt.touches.length === 1 : evt.buttons === 1;
+        let isTouchEvent = evt.type.includes("touch");
+        let buttonDown = isTouchEvent ? evt.touches.length === 1 : evt.buttons === 1;
 
         if (!buttonDown){
             return;
         }
 
-        var rect = this.blockArt.element.getBoundingClientRect();
-        var clientX = isTouchEvent ? evt.touches[0].clientX : evt.clientX;
-        var clientY = isTouchEvent ? evt.touches[0].clientY : evt.clientY;
-        var x = Math.floor(this.blockArt.width * clamp((clientX - rect.left) / rect.width));
-        var y = Math.floor(this.blockArt.height * clamp((clientY - rect.top) / rect.height));
+        let rect = this.blockArt.element.getBoundingClientRect();
+        let clientX = isTouchEvent ? evt.touches[0].clientX : evt.clientX;
+        let clientY = isTouchEvent ? evt.touches[0].clientY : evt.clientY;
+        let x = Math.floor(this.blockArt.width * clamp((clientX - rect.left) / rect.width));
+        let y = Math.floor(this.blockArt.height * clamp((clientY - rect.top) / rect.height));
 
         this.blockArt.setPixelSymmetric(x, y, {
             symbol: this.symbolPalette.index,
@@ -471,7 +518,7 @@ class App{
         this.symbolPalette.setIndex(0);
 
         fastClick(document.getElementById("swap-colors"), evt => {
-            var color = this.colorPalette.index;
+            let color = this.colorPalette.index;
             this.colorPalette.setIndex(this.backgroundPalette.index);
             this.backgroundPalette.setIndex(color);
         });
@@ -486,7 +533,7 @@ class App{
         });
 
         fastClick(document.getElementById("randomize"), evt => {
-            this.blockArt.randomize();
+            this.blockArt.randomize2(this.symmetryX, this.symmetryY);
             this.storeImage();
         });
 
@@ -527,20 +574,20 @@ class App{
     loadImage(index) {
         this.imageIndex = index;
         let key = "image" + this.imageIndex;
-        var data = this.readData(key);
+        let data = this.readData(key);
         this.blockArt.loadData(data);
         console.log("loaded " + key);
     }
 
     storeImage(){
-        var data = this.blockArt.data;
+        let data = this.blockArt.data;
         let key = "image" + this.imageIndex;
         localStorage.setItem(key, JSON.stringify(Array.from(data)));
         console.log("stored " + key);
     }
 
     readData(key){
-        var json = localStorage.getItem(key);
+        let json = localStorage.getItem(key);
         if (json){
             return new Int8Array(JSON.parse(json));
         }
@@ -554,6 +601,6 @@ function preventOverScroll() {
 
 document.addEventListener("DOMContentLoaded", () => {
     // preventOverScroll();
-    var app = new App();
+    let app = new App();
     app.run();
 });

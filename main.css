@@ -45,7 +45,7 @@ body{
     top: 0.25em;
     left: -2em;
     right: 0;
-    background-image: url("svg/redo-solid.svg");
+    background-image: url("svg/undo-solid.svg");
 }
 
 #rotate-right{
